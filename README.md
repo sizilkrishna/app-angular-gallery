@@ -1,41 +1,42 @@
-# AppAng
+# Mercurial Gallery of Art – Angular 22
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.5.
+Front end for the [art catalogue API](https://github.com/sizilkrishna/api-symfony-php) (Symfony 7 + PostgreSQL).
+Migrated from the original Angular 8 app. Server-side rendered, signals-based, zoneless, ~95 kB gzipped on first load.
 
-## Development server
+## Requirements
+- **Node.js ≥ 22.22.3 or ≥ 24.15** (Angular 22 requirement)
+- A running API: either your Symfony stack (`docker compose up` in `api-symfony-php`, listens on `:8080`) **or** the bundled mock.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Run it
+```bash
+npm install
+npm run mock-api     # optional: fake API on :8080 with 240 generated artworks (no PHP/Postgres needed)
+npm start            # http://localhost:4200
+npm test             # unit tests (Vitest)
+npm run build        # production build -> dist/mgo-gallery (browser + SSR server)
+npm run start:ssr    # run the built SSR server on :4000
+```
 
-## Code scaffolding
+## Configure (before deploying)
+| What | Where |
+|---|---|
+| API base URL | `src/environments/environment.production.ts` → `apiUrl` (**placeholder – you must change it**) |
+| Public site URL (canonical / Open Graph) | same file → `siteUrl` |
+| Image source / resizing proxy | `imageBaseUrl`, `imageProxy` |
+| Allowed hostnames for SSR | env var `ALLOWED_HOSTS=your.domain,www.your.domain` (Angular rejects other `Host` headers) |
+| Browser access to the API | API env `CORS_ALLOW_ORIGIN` must match your site origin (regex), e.g. `^https://your\.domain$` |
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Deploy with the included `Dockerfile` (Cloud Run, Fly.io, Railway, …). Firebase Hosting can front a Cloud Run service; plain static hosting no longer works because pages are server-rendered.
 
-## Build
+## Routes
+`/` · `/explore/:dimension` · `/collection/:dimension/:id` · `/art/:id` · `/search?q=&fo=&sc=&ti=&ty=&au=&lo=` · `/favorites` · `/about` · `/contact` · `/privacy`
+`dimension` = `author | timeframe | form | type | school | location`. All old URLs (`/arts/author/3`, `/arts/showcase/7`, `/gallery/authors`, `/filter`, `/info/legal` …) redirect to the new ones.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-APP:
-Spinner is acting wierd! Overlapping Footer.
-Make Mat cards Horizontal.
-Work on Gallery page.
-Work on Home page.
-Work on Search and Filter page.
-
-API: 
-implement pagination properly (not important)
-
-
-
-Insert ICONS in app
+## Structure
+```
+src/app/core/     API client, models, image/SEO/theme/favourites services, error handler
+src/app/shared/   art-card, collection-card, art-image, zoom-viewer, pager, states, icons
+src/app/pages/    home, explore, collection, artwork, search, favorites, info, not-found
+tools/mock-api.mjs   API stand-in that follows docs/openapi.yaml
+```
+See **MIGRATION.md** for what changed, why, and what to do next.

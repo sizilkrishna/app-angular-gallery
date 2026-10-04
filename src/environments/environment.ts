@@ -1,16 +1,16 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
+/** Development defaults. `npm run mock-api` or the Symfony docker-compose stack both listen on :8080. */
 export const environment = {
-  production: false
+  production: false,
+  /** Base URL of the Symfony API, including the `/api` prefix. */
+  apiUrl: 'https://localhost:8000/api',
+  /** Artwork `url` values that are not absolute are resolved against this base. */
+  imageBaseUrl: 'https://www.wga.hu/art/',
+  /**
+   * Optional image resizing proxy / CDN. `{url}` is replaced with the encoded source URL and `{w}`
+   * with the requested pixel width. Empty = load source images directly.
+   * Example: 'https://images.example.com/?url={url}&w={w}&output=webp'
+   */
+  imageProxy: '',
+  siteUrl: 'http://localhost:4200',
+  siteName: 'Mercurial Gallery of Art',
 };
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.

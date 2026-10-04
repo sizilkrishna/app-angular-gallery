@@ -1,0 +1,57 @@
+<a class="skip" href="#main" (click)="$event.preventDefault(); main.focus()">Skip to content</a>
+
+<header class="top">
+  <div class="container bar">
+    <a class="brand" routerLink="/" aria-label="Mercurial Gallery of Art – home">
+      <span class="mark" aria-hidden="true">M</span>
+      <span class="name">Mercurial <em>Gallery of Art</em></span>
+    </a>
+
+    <form class="search" role="search" (submit)="search($event, searchBox.value)">
+      <app-icon name="search" />
+      <input #searchBox type="search" name="q" placeholder="Search art, artists, subjects…  ( / )" aria-label="Search the gallery"
+             autocomplete="off" maxlength="200" enterkeyhint="search" />
+    </form>
+
+    <div class="actions">
+      <a class="icon-btn" routerLink="/favorites" routerLinkActive="active" aria-label="My gallery">
+        <app-icon name="heart" [filled]="favorites.count() > 0" />
+        @if (favorites.count() > 0) { <span class="badge">{{ favorites.count() }}</span> }
+      </a>
+      <button type="button" class="icon-btn" (click)="theme.toggle()" [attr.aria-label]="theme.isDark() ? 'Switch to light theme' : 'Switch to dark theme'">
+        <app-icon [name]="theme.isDark() ? 'sun' : 'moon'" />
+      </button>
+    </div>
+  </div>
+
+  <nav class="container cats" aria-label="Browse">
+    @for (item of nav; track item.label) {
+      <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+    }
+  </nav>
+</header>
+
+<main #main id="main" tabindex="-1">
+  <router-outlet />
+</main>
+
+<footer class="foot">
+  <div class="container cols">
+    <div>
+      <strong>{{ cfg.siteName }}</strong>
+      <p>A hobby project for exploring European art, by artist, period, form, subject, school and place.</p>
+    </div>
+    <div>
+      <strong>Explore</strong>
+      <p><a routerLink="/explore/author">Artists</a> · <a routerLink="/explore/timeframe">Periods</a> · <a routerLink="/search">Search</a> · <a routerLink="/favorites">My gallery</a></p>
+    </div>
+    <div>
+      <strong>About</strong>
+      <p><a routerLink="/about">About &amp; credits</a> · <a routerLink="/contact">Contact</a> · <a routerLink="/privacy">Privacy</a></p>
+    </div>
+  </div>
+  <div class="container fine">
+    Images courtesy of the <a href="https://www.wga.hu/" target="_blank" rel="noopener noreferrer">Web Gallery of Art</a>. We do not own them.
+    © {{ year }} {{ cfg.siteName }}.
+  </div>
+</footer>
